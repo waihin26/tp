@@ -61,6 +61,25 @@ public class MarkPaidCommandTest {
         assertCommandFailure(command, model, expectedMessage);
     }
 
+    @Test
+    public void execute_invalidMonthFormat_throwsCommandException() {
+        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        Index index = INDEX_FIRST_PERSON;
+
+        // Use an invalid month format, e.g., "2024-14"
+        MonthPaid invalidMonthPaid = new MonthPaid("[2024-14]");
+        Set<MonthPaid> invalidMonthsPaid = Set.of(invalidMonthPaid);
+
+        // Attempt to add the invalid month
+        MarkPaidCommand command = new MarkPaidCommand(index, invalidMonthsPaid);
+
+        // Expected message indicating invalid month format
+        String expectedMessage = String.format("Invalid month format: %s. Month must be in YYYY-MM format, "
+                + "where MM is 01-12.", "2024-14");
+        assertCommandFailure(command, model, expectedMessage);
+    }
+
+
 
     @Test
     public void toStringMethod() {
