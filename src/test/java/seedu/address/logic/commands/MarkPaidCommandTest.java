@@ -3,6 +3,7 @@ package seedu.address.logic.commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
@@ -38,6 +39,28 @@ public class MarkPaidCommandTest {
                 modifiedPerson);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
     }
+
+    @Test
+    public void execute_duplicateMonthPaid_throwsCommandException() {
+        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        Index index = INDEX_FIRST_PERSON;
+        Set<MonthPaid> duplicateMonthsPaid = VALID_MONTHSPAID;
+
+
+        // Get the person and ensure they already have the months paid
+        Person person = model.getFilteredPersonList().get(index.getZeroBased());
+        Person personWithMonthsPaid = createMarkedPerson(person, duplicateMonthsPaid);
+        model.setPerson(person, personWithMonthsPaid);
+
+        // Attempt to add the same months again
+        MarkPaidCommand command = new MarkPaidCommand(index, duplicateMonthsPaid);
+
+        String duplicateMonth = duplicateMonthsPaid.iterator().next().toString(); // Assuming one month for simplicity
+        String expectedMessage = String.format("Duplicate month paid: %s", duplicateMonth);
+
+        assertCommandFailure(command, model, expectedMessage);
+    }
+
 
     @Test
     public void toStringMethod() {

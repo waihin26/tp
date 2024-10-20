@@ -65,6 +65,14 @@ public class MarkPaidCommand extends Command {
         }
 
         Person personToMark = lastShownList.get(index.getZeroBased());
+        Set<MonthPaid> existingMonthsPaid = personToMark.getMonthsPaid();
+        //Check for duplicate months paid
+        for (MonthPaid monthPaid : monthsPaid) {
+            if (existingMonthsPaid.contains(monthPaid)) {
+                throw new CommandException(String.format("Duplicate month paid: %s", monthPaid));
+            }
+        }
+
         Person markedPerson = createMarkedPerson(personToMark, monthsPaid);
 
         model.setPerson(personToMark, markedPerson);
