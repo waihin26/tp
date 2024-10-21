@@ -76,15 +76,17 @@ public class MarkPaidCommand extends Command {
             // Strip brackets before validation
             String monthStr = monthPaid.toString().replaceAll("[\\[\\]]", "");
             if (!monthPattern.matcher(monthStr).matches()) {
-                throw new CommandException(String.format("Invalid month format: %s. "
-                        + "Month must be in YYYY-MM format, where MM is 01-12.", monthStr));
+                String invalidMonthsMessage = String.format("Invalid month format: %s. "
+                        + "Month must be in YYYY-MM format, where MM is 01-12.", monthStr);
+                throw new CommandException(invalidMonthsMessage);
             }
         }
 
         //Check for duplicate months paid
         for (MonthPaid monthPaid : monthsPaid) {
             if (existingMonthsPaid.contains(monthPaid)) {
-                throw new CommandException(String.format("Duplicate month paid: %s", monthPaid));
+                String duplicateMonthsMessage = String.format("Duplicate month paid: %s", monthPaid);
+                throw new CommandException(duplicateMonthsMessage);
             }
         }
 
